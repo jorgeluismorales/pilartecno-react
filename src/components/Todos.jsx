@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { nanoid } from "nanoid";
 import TodosList from "./TodosList";
@@ -13,8 +13,39 @@ export const Todos = () => {
   });
   const [todos, setTodos] = useState([]);
   const [error, setError] = useState(false);
+  const [countries, setCountries] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [companies, setCcompanies] = useState([]);
 
   const { puesto, empresa, ciudad, pais } = todo;
+
+  let filteredCities = []
+
+  useEffect(() => {
+    if (localStorage.getItem("countries") != null) {
+      setCountries(
+        JSON.parse(localStorage.getItem("countries"))
+      )
+    }
+
+    if (localStorage.getItem("cities") != null) {
+      filteredCities = JSON.parse(localStorage.getItem("cities"))
+
+    }
+
+    if (localStorage.getItem("companies") != null) {
+      setCcompanies(
+        JSON.parse(localStorage.getItem("companies"))
+      )
+    }
+  }, [filteredCities])
+
+  useEffect(() => {
+
+    if (pais !== "") {
+      setCities(filteredCities.filter(city => city.selectedCountry === pais))
+    }
+  }, [pais])
 
   const updateState = (e) => {
     setTodo({
@@ -30,7 +61,7 @@ export const Todos = () => {
       puesto.trim() === "" ||
       empresa.trim() === "" ||
       ciudad.trim() === "" ||
-      pais.trim() === ""
+      pais.trim() === "Paises"
     ) {
       setError(true);
       return;
@@ -57,6 +88,10 @@ export const Todos = () => {
   const handleDelete = (id) => {
     setTodos(todos.filter((todo) => todo.id !== id));
   };
+
+  console.log(ciudad);
+  console.log(pais);
+  console.log(cities);
   return (
     <div className="row">
       <div className="col-6">
@@ -69,9 +104,9 @@ export const Todos = () => {
           handleSubmit={handleSubmit}
           updateState={updateState}
           puesto={puesto}
-          empresa={empresa}
-          ciudad={ciudad}
-          pais={pais}
+          countries={countries}
+          cities={cities}
+          companies={companies}
         />
       </div>
       <div className="col-6">

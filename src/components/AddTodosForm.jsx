@@ -2,9 +2,9 @@ const AddTodosForm = ({
   handleSubmit,
   updateState,
   puesto,
-  empresa,
-  ciudad,
-  pais,
+  countries,
+  cities,
+  companies
 }) => {
   return (
     <form onSubmit={handleSubmit}>
@@ -17,32 +17,35 @@ const AddTodosForm = ({
         value={puesto}
       />
       <br />
-      <input
-        type="text"
-        name="empresa"
-        className="form-control"
-        placeholder="Ingresa empresa"
-        onChange={updateState}
-        value={empresa}
-      />
+
+      <select className="form-control" onChange={updateState} name="empresa">
+        <option defaultValue>Paises</option>
+        {
+          countries.map(country => (
+            <option value={country} key={country}>{country}</option>
+          ))
+        }
+      </select>
       <br />
-      <input
-        type="text"
-        name="ciudad"
-        className="form-control"
-        placeholder="Ingresa ciudad"
-        onChange={updateState}
-        value={ciudad}
-      />
+
+      <select className="form-control" onChange={updateState} name="ciudad">
+        <option defaultValue>Ciudades</option>
+        {
+          cities.map(city => (
+            <option value={city.selectedCity} key={city.selectedCity}>{city.selectedCity}</option>
+          ))
+        }
+      </select>
+      
       <br />
-      <input
-        type="text"
-        name="pais"
-        className="form-control"
-        placeholder="Ingresa pais"
-        onChange={updateState}
-        value={pais}
-      />
+      <select className="form-control" onChange={updateState} name="empresa">
+        <option defaultValue>Empresas</option>
+        {
+          companies.map(company => (
+            <option value={company.selectedCompany} key={company.selectedCompany}>{company.selectedCompany}</option>
+          ))
+        }
+      </select>
       <br />
       <button type="submit" className="btn btn-primary btn-block">
         Agregar
