@@ -54,7 +54,7 @@ const AddCityScreen = () => {
     <>
       {error && (
         <div className="alert alert-danger text-center" role="alert">
-          Campo obligatorio
+          Todos los campos son obligatorios
         </div>
       )}
       <form onSubmit={handleSubmit}>
