@@ -7,6 +7,7 @@ const AddCityScreen = () => {
   });
   const [cities, setCities] = useState([]);
   const [countries, setCountries] = useState([]);
+  const [error, setError] = useState(false);
 
   const { selectedCity, selectedCountry } = city;
 
@@ -26,9 +27,10 @@ const AddCityScreen = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (selectedCity.trim() === "" || selectedCountry.trim() === "Paises") {
-      console.log("error");
+      setError(true);
       return;
     }
+    setError(false);
     setCities([
       ...cities,
       {
@@ -49,50 +51,57 @@ const AddCityScreen = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="row">
-        <div className="col-6">
-          <label htmlFor="city" className="form-label">
-            Agregar Ciudad
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Ingresa una ciudad"
-            id="city"
-            value={selectedCity}
-            onChange={(e) => handleInput(e)}
-            name="selectedCity"
-          />
+    <>
+      {error && (
+        <div className="alert alert-danger text-center" role="alert">
+          Campo obligatorio
         </div>
-        <div className="col-6">
-          <label className="form-label">Seleccionar pais</label>
-          <br />
-          <select
-            className="form-control"
-            onChange={(e) => handleInput(e)}
-            name="selectedCountry"
-          >
-            <option defaultValue>Paises</option>
-            {countries.map((country) => (
-              <option value={country} key={country}>
-                {country}
-              </option>
-            ))}
-          </select>
+      )}
+      <form onSubmit={handleSubmit}>
+        <div className="row">
+          <div className="col-6">
+            <label htmlFor="city" className="form-label">
+              Agregar Ciudad
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Ingresa una ciudad"
+              id="city"
+              value={selectedCity}
+              onChange={(e) => handleInput(e)}
+              name="selectedCity"
+            />
+          </div>
+          <div className="col-6">
+            <label className="form-label">Seleccionar pais</label>
+            <br />
+            <select
+              className="form-control"
+              onChange={(e) => handleInput(e)}
+              name="selectedCountry"
+            >
+              <option defaultValue>Paises</option>
+              {countries.map((country) => (
+                <option value={country} key={country}>
+                  {country}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-      </div>
-      <button type="submit" className="btn btn-primary mt-3 mr-3">
-        Agregar
-      </button>
-      <button
-        type="button"
-        className="btn btn-warning mt-3 mr-3"
-        onClick={saveToLocalStorage}
-      >
-        Guardar
-      </button>
-    </form>
+        <button type="submit" className="btn btn-primary mt-3 mr-3">
+          Agregar
+        </button>
+        <button
+          type="button"
+          className="btn btn-warning mt-3 mr-3"
+          onClick={saveToLocalStorage}
+        >
+          Guardar
+        </button>
+      </form>
+    </>
   );
 };
 

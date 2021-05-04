@@ -3,6 +3,7 @@ import { useState } from "react";
 const AddCountryScreen = () => {
   const [country, setcountry] = useState("");
   const [countries, setcountries] = useState([]);
+  const [error, setError] = useState(false);
 
   const handleInput = (e) => {
     setcountry(e.target.value);
@@ -11,9 +12,10 @@ const AddCountryScreen = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (country.trim() === "") {
-      console.log("error");
+      setError(true);
       return;
     }
+    setError(false);
     setcountries([...countries, country]);
     setcountry("");
   };
@@ -25,29 +27,37 @@ const AddCountryScreen = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="country" className="form-label">
-        Agregar pais
-      </label>
-      <input
-        type="text"
-        className="form-control"
-        placeholder="Ingresa un pais"
-        id="country"
-        value={country}
-        onChange={(e) => handleInput(e)}
-      />
-      <button type="submit" className="btn btn-primary mt-3 mr-3">
-        Agregar
-      </button>
-      <button
-        type="button"
-        className="btn btn-warning mt-3 mr-3"
-        onClick={saveToLocalStorage}
-      >
-        Guardar
-      </button>
-    </form>
+    <>
+      {error && (
+        <div className="alert alert-danger text-center" role="alert">
+          Campo obligatorio
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="country" className="form-label">
+          Agregar pais
+        </label>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Ingresa un pais"
+          id="country"
+          value={country}
+          onChange={(e) => handleInput(e)}
+        />
+        <button type="submit" className="btn btn-primary mt-3 mr-3">
+          Agregar
+        </button>
+        <button
+          type="button"
+          className="btn btn-warning mt-3 mr-3"
+          onClick={saveToLocalStorage}
+        >
+          Guardar
+        </button>
+      </form>
+    </>
   );
 };
 
