@@ -3,6 +3,11 @@ import { nanoid } from "nanoid";
 import TodosList from "./TodosList";
 import AddTodosForm from "./AddTodosForm";
 
+let initialsToDos = JSON.parse(localStorage.getItem("todos"));
+if (!initialsToDos) {
+  initialsToDos = [];
+}
+
 export const Todos = () => {
   const [todo, setTodo] = useState({
     puesto: "",
@@ -10,7 +15,7 @@ export const Todos = () => {
     ciudad: "",
     pais: "",
   });
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState(initialsToDos);
   const [error, setError] = useState(false);
   const [countries, setCountries] = useState([]);
   const [cities, setCities] = useState([]);
@@ -19,6 +24,16 @@ export const Todos = () => {
   const [filteredCompanies, setFilteredCcompanies] = useState([]);
 
   const { puesto, empresa, ciudad, pais } = todo;
+
+  useEffect(() => {
+    let initialsToDos = JSON.parse(localStorage.getItem("todos"));
+
+    if (initialsToDos) {
+      localStorage.setItem("todos", JSON.stringify(todos));
+    } else {
+      localStorage.setItem("todos", JSON.stringify([]));
+    }
+  }, [todos]);
 
   useEffect(() => {
     if (localStorage.getItem("countries") != null) {
