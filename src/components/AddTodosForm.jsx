@@ -3,8 +3,8 @@ const AddTodosForm = ({
   updateState,
   puesto,
   countries,
-  cities,
-  companies
+  filteredCities,
+  filteredCompanies
 }) => {
   return (
     <form onSubmit={handleSubmit}>
@@ -18,7 +18,7 @@ const AddTodosForm = ({
       />
       <br />
 
-      <select className="form-control" onChange={updateState} name="empresa">
+      <select className="form-control" onChange={updateState} name="pais">
         <option defaultValue>Paises</option>
         {
           countries.map(country => (
@@ -31,7 +31,7 @@ const AddTodosForm = ({
       <select className="form-control" onChange={updateState} name="ciudad">
         <option defaultValue>Ciudades</option>
         {
-          cities.map(city => (
+          filteredCities.map(city => (
             <option value={city.selectedCity} key={city.selectedCity}>{city.selectedCity}</option>
           ))
         }
@@ -41,7 +41,7 @@ const AddTodosForm = ({
       <select className="form-control" onChange={updateState} name="empresa">
         <option defaultValue>Empresas</option>
         {
-          companies.map(company => (
+          filteredCompanies.map(company => (
             <option value={company.selectedCompany} key={company.selectedCompany}>{company.selectedCompany}</option>
           ))
         }

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-
 import { nanoid } from "nanoid";
 import TodosList from "./TodosList";
 import AddTodosForm from "./AddTodosForm";
@@ -15,37 +14,39 @@ export const Todos = () => {
   const [error, setError] = useState(false);
   const [countries, setCountries] = useState([]);
   const [cities, setCities] = useState([]);
+  const [filteredCities, setFilteredCities] = useState([]);
   const [companies, setCcompanies] = useState([]);
+  const [filteredCompanies, setFilteredCcompanies] = useState([]);
 
   const { puesto, empresa, ciudad, pais } = todo;
 
-  let filteredCities = []
-
   useEffect(() => {
     if (localStorage.getItem("countries") != null) {
-      setCountries(
-        JSON.parse(localStorage.getItem("countries"))
-      )
+      setCountries(JSON.parse(localStorage.getItem("countries")));
     }
 
     if (localStorage.getItem("cities") != null) {
-      filteredCities = JSON.parse(localStorage.getItem("cities"))
-
+      setCities(JSON.parse(localStorage.getItem("cities")));
     }
 
     if (localStorage.getItem("companies") != null) {
-      setCcompanies(
-        JSON.parse(localStorage.getItem("companies"))
-      )
+      setCcompanies(JSON.parse(localStorage.getItem("companies")));
     }
-  }, [filteredCities])
+  }, []);
 
   useEffect(() => {
-
     if (pais !== "") {
-      setCities(filteredCities.filter(city => city.selectedCountry === pais))
+      setFilteredCities(cities.filter((city) => city.selectedCountry === pais));
     }
-  }, [pais])
+  }, [pais, cities]);
+
+  useEffect(() => {
+    if (ciudad !== "") {
+      setFilteredCcompanies(
+        companies.filter((company) => company.selectedCity === ciudad)
+      );
+    }
+  }, [ciudad, companies]);
 
   const updateState = (e) => {
     setTodo({
@@ -89,9 +90,6 @@ export const Todos = () => {
     setTodos(todos.filter((todo) => todo.id !== id));
   };
 
-  console.log(ciudad);
-  console.log(pais);
-  console.log(cities);
   return (
     <div className="row">
       <div className="col-6">
@@ -105,8 +103,8 @@ export const Todos = () => {
           updateState={updateState}
           puesto={puesto}
           countries={countries}
-          cities={cities}
-          companies={companies}
+          filteredCities={filteredCities}
+          filteredCompanies={filteredCompanies}
         />
       </div>
       <div className="col-6">

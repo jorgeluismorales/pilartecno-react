@@ -1,6 +1,6 @@
 const TodosList = ({ td, handleDelete }) => {
   return (
-    <ul class="list-group" key={td.id}>
+    <ul className="list-group" key={td.id}>
       <li className="list-group-item mb-3">
         <p>
           <b>Puesto</b>: {td.puesto} - <b>Empresa</b>: {td.empresa}
