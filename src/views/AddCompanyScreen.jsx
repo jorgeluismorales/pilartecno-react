@@ -46,8 +46,6 @@ const AddCompanyScreen = () => {
     if (cities.length > 0) {
       localStorage.setItem("companies", JSON.stringify(companies));
     }
-
-    setCcompanies([]);
   };
   return (
     <form onSubmit={handleSubmit}>

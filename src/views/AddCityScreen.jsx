@@ -46,8 +46,6 @@ const AddCityScreen = () => {
     if (cities.length > 0) {
       localStorage.setItem("cities", JSON.stringify(cities));
     }
-
-    setCities([]);
   };
 
   return (

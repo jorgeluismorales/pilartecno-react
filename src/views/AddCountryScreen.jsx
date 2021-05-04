@@ -22,8 +22,6 @@ const AddCountryScreen = () => {
     if (countries.length > 0) {
       localStorage.setItem("countries", JSON.stringify(countries));
     }
-
-    setcountries([]);
   };
 
   return (
