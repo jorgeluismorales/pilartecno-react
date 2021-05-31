@@ -1,19 +1,17 @@
-const TodosList = ({ td, handleDelete }) => {
+const TodosList = ({ td, handleDelete, enableEdition }) => {
   return (
     <ul className="list-group" key={td.id}>
       <li className="list-group-item mb-3">
         <p>
-          <b>Puesto</b>: {td.puesto} - <b>Empresa</b>: {td.empresa}
+          <b>Posición</b>: {td.position} - <b>Descripción</b>: {td.description}
         </p>
         <p>
-          <b>Ciudad</b>: {td.ciudad} - <b>Pais</b>: {td.pais}
+          <b>Empresa</b>: {td.organization.name}
         </p>
-        <button
-          onClick={() => handleDelete(td.id)}
-          className="btn btn-danger float-right"
-        >
-          Eliminar
-        </button>
+
+        <button onClick={() => enableEdition(td)} className="btn btn-warning btn-sm mr-3">Editar</button>
+         <button onClick={() => handleDelete(td.id)} className="btn btn-danger btn-sm">Borrar</button>
+      
       </li>
     </ul>
   );

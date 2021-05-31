@@ -2,7 +2,9 @@ import { Switch, Route } from "react-router-dom";
 import AddCityScreen from "./views/AddCityScreen";
 import AddCompanyScreen from "./views/AddCompanyScreen";
 import AddCountryScreen from "./views/AddCountryScreen";
+import NotFound from "./views/NotFound";
 import { Todos } from "./components/Todos";
+
 
 const AppRoutes = () => (
   <Switch>
@@ -17,6 +19,9 @@ const AppRoutes = () => (
     </Route>
     <Route exact path="/addcountry">
       <AddCountryScreen />
+    </Route>
+    <Route exact path="*">
+      <NotFound />
     </Route>
   </Switch>
 );

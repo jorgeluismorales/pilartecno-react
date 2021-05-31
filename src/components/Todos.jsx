@@ -1,67 +1,46 @@
 import { useState, useEffect } from "react";
-import { nanoid } from "nanoid";
 import TodosList from "./TodosList";
 import AddTodosForm from "./AddTodosForm";
-
-let initialsToDos = JSON.parse(localStorage.getItem("todos"));
-if (!initialsToDos) {
-  initialsToDos = [];
-}
+import axios from "axios";
 
 export const Todos = () => {
   const [todo, setTodo] = useState({
     puesto: "",
     empresa: "",
-    ciudad: "",
-    pais: "",
+    descripcion: "",
   });
-  const [todos, setTodos] = useState(initialsToDos);
+  const [todos, setTodos] = useState([]);
   const [error, setError] = useState(false);
-  const [countries, setCountries] = useState([]);
-  const [cities, setCities] = useState([]);
-  const [filteredCities, setFilteredCities] = useState([]);
   const [companies, setCcompanies] = useState([]);
-  const [filteredCompanies, setFilteredCcompanies] = useState([]);
+  const [selectedCompany, setSelectedCompany] = useState("");
+  const [editionMode, setEditionMode] = useState(false);
+  const [id, setId] = useState("");
 
-  const { puesto, empresa, ciudad, pais } = todo;
-
-  useEffect(() => {
-    let initialsToDos = JSON.parse(localStorage.getItem("todos"));
-
-    if (initialsToDos) {
-      localStorage.setItem("todos", JSON.stringify(todos));
-    } else {
-      localStorage.setItem("todos", JSON.stringify([]));
-    }
-  }, [todos]);
+  const { puesto, empresa, descripcion } = todo;
 
   useEffect(() => {
-    if (localStorage.getItem("countries") != null) {
-      setCountries(JSON.parse(localStorage.getItem("countries")));
-    }
-
-    if (localStorage.getItem("cities") != null) {
-      setCities(JSON.parse(localStorage.getItem("cities")));
-    }
-
-    if (localStorage.getItem("companies") != null) {
-      setCcompanies(JSON.parse(localStorage.getItem("companies")));
-    }
+    const getData = async () => {
+      const res = await axios.get(
+        "https://api-fake-pilar-tecno.herokuapp.com/organizations?_expand=place"
+      );
+      const jobs = await axios.get(
+        "https://api-fake-pilar-tecno.herokuapp.com/jobs?_expand=organization"
+      );
+      setTodos(jobs.data);
+      setCcompanies(res.data);
+    };
+    getData();
   }, []);
 
   useEffect(() => {
-    if (pais !== "") {
-      setFilteredCities(cities.filter((city) => city.selectedCountry === pais));
-    }
-  }, [pais, cities]);
-
-  useEffect(() => {
-    if (ciudad !== "") {
-      setFilteredCcompanies(
-        companies.filter((company) => company.selectedCity === ciudad)
+    const fetchCompany = async () => {
+      const response = await axios.get(
+        `https://api-fake-pilar-tecno.herokuapp.com/organizations/${empresa}`
       );
-    }
-  }, [ciudad, companies]);
+      setSelectedCompany(response.data.name);
+    };
+    fetchCompany();
+  }, [empresa]);
 
   const updateState = (e) => {
     setTodo({
@@ -70,41 +49,94 @@ export const Todos = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (
       puesto.trim() === "" ||
       empresa.trim() === "" ||
-      ciudad.trim() === "" ||
-      pais.trim() === "Paises"
+      descripcion.trim() === ""
     ) {
       setError(true);
       return;
     }
     setError(false);
+    const data = await axios.post(
+      "https://api-fake-pilar-tecno.herokuapp.com/jobs",
+      {
+        position: puesto,
+        description: descripcion,
+        organizationId: empresa,
+      }
+    );
     setTodos([
       ...todos,
       {
-        id: nanoid(),
-        puesto,
-        empresa,
-        ciudad,
-        pais,
+        position: data.data.position,
+        description: data.data.description,
+        id: data.data.id,
+        organization: {
+          name: selectedCompany,
+        },
       },
     ]);
     setTodo({
       puesto: "",
       empresa: "",
-      ciudad: "",
-      pais: "",
+      descripcion: "",
     });
   };
-
   const handleDelete = (id) => {
+    axios.delete(`https://api-fake-pilar-tecno.herokuapp.com/jobs/${id}`);
     setTodos(todos.filter((todo) => todo.id !== id));
   };
 
+  const enableEdition = (td) => {
+    setEditionMode(true);
+    setTodo({
+      puesto: td.position,
+      empresa: td.organization.id,
+      descripcion: td.description,
+    });
+    setId(td.id);
+    console.log(td);
+  };
+
+  const edit = async (e) => {
+    e.preventDefault();
+    if (puesto.trim() === "" || descripcion.trim() === "") {
+      setError(true);
+      return;
+    }
+    const data = await axios.patch(
+      `https://api-fake-pilar-tecno.herokuapp.com/jobs/${id}`,
+      {
+        position: puesto,
+        description: descripcion,
+        organizationId: empresa,
+      }
+    );
+    setTodos(
+      todos.map((job) =>
+        job.id === id
+          ? {
+              id: data.data.id,
+              position: data.data.position,
+              description: data.data.description,
+              organization: {
+                name: selectedCompany,
+              },
+            }
+          : job
+      )
+    );
+    setEditionMode(false);
+    setTodo({
+      puesto: "",
+      empresa: "",
+      descripcion: "",
+    });
+    setId("");
+  };
   return (
     <div className="row">
       <div className="col-6">
@@ -114,17 +146,23 @@ export const Todos = () => {
           </div>
         )}
         <AddTodosForm
+          editionMode={editionMode}
+          edit={edit}
           handleSubmit={handleSubmit}
           updateState={updateState}
           puesto={puesto}
-          countries={countries}
-          filteredCities={filteredCities}
-          filteredCompanies={filteredCompanies}
+          descripcion={descripcion}
+          companies={companies}
         />
       </div>
       <div className="col-6">
         {todos.map((td) => (
-          <TodosList td={td} handleDelete={handleDelete} />
+          <TodosList
+            td={td}
+            handleDelete={handleDelete}
+            enableEdition={enableEdition}
+            key={td.id}
+          />
         ))}
       </div>
     </div>

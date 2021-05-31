@@ -2,12 +2,13 @@ const AddTodosForm = ({
   handleSubmit,
   updateState,
   puesto,
-  countries,
-  filteredCities,
-  filteredCompanies
+  descripcion,
+  companies,
+  editionMode,
+  edit
 }) => {
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={editionMode ? edit : handleSubmit}>
       <input
         type="text"
         name="puesto"
@@ -18,37 +19,29 @@ const AddTodosForm = ({
       />
       <br />
 
-      <select className="form-control" onChange={updateState} name="pais">
-        <option defaultValue>Paises</option>
-        {
-          countries.map(country => (
-            <option value={country} key={country}>{country}</option>
-          ))
-        }
-      </select>
+      <input
+        type="text"
+        name="descripcion"
+        className="form-control"
+        placeholder="Ingresa descripción del puesto"
+        onChange={updateState}
+        value={descripcion}
+      />
       <br />
 
-      <select className="form-control" onChange={updateState} name="ciudad">
-        <option defaultValue>Ciudades</option>
-        {
-          filteredCities.map(city => (
-            <option value={city.selectedCity} key={city.selectedCity}>{city.selectedCity}</option>
-          ))
-        }
-      </select>
-      
-      <br />
       <select className="form-control" onChange={updateState} name="empresa">
         <option defaultValue>Empresas</option>
         {
-          filteredCompanies.map(company => (
-            <option value={company.selectedCompany} key={company.selectedCompany}>{company.selectedCompany}</option>
+          companies.map(company => (
+            <option value={company.id} key={company.id}>{company.name}</option>
           ))
         }
       </select>
       <br />
-      <button type="submit" className="btn btn-primary btn-block">
-        Agregar
+      <button type="submit" className={editionMode ? 'btn btn-warning mt-3 mr-3' : 'btn btn-primary mt-3 mr-3'}>
+        {
+          editionMode ? 'Editar' : 'Agregar'
+        }
       </button>
     </form>
   );
